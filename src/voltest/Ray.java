@@ -14,7 +14,7 @@ public class Ray
 		inv_direction = new Vector(
 				1/dir.x,
 				1/dir.y,
-				1/dir.y);
+				1/dir.z);
 		sign = new int[3];
 		sign[0] = (inv_direction.x < 0) ? 1 : 0;
 		sign[1] = (inv_direction.y < 0) ? 1 : 0;
@@ -52,24 +52,4 @@ public class Ray
 		return ray;
 	}
 	
-	public static boolean intersects(
-			Vector win,
-			Box box,
-			Camera c
-			)
-	{
-		Vector ray = intersection(
-				win,
-				box,
-				c
-				);
-		
-		return (
-				ray.x > box.src.x
-				&& ray.y > box.src.y
-				&& ray.x < box.max().x
-				&& ray.y < box.max().y
-				);
-		
-	}
 }

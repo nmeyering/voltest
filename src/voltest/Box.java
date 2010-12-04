@@ -1,38 +1,14 @@
 package voltest;
 public class Box
 {
-	public Vector src;
-	public Vector dim;
+	public Vector vecs[]; //[0] - min, [1] - max
 	
 	public Box(
-			Vector src,
-			Vector dim
+			Vector min,
+			Vector max
 			)
 	{
-		this.src = src;
-		this.dim = dim;
-	}
-	public Box( 
-			double x,
-			double y,
-			double z,
-			double dx,
-			double dy,
-			double dz
-			)
-	{
-		this(
-				new Vector(
-						x,
-						y,
-						z
-						),
-				new Vector(
-						dx,
-						dy,
-						dz
-						)
-				);
+		this.vecs = new Vector[] {min,max};
 	}
 	
 	public Box(
@@ -41,28 +17,62 @@ public class Box
 			)
 	{
 		this(
-				src,
-				new Vector(
-						dim,
-						dim,
-						dim
-						)
-				);
+			src,
+			new Vector(
+				src.x + dim,
+				src.y + dim, 
+				src.z + dim
+				)
+			);
 	}
 	public Vector min()
 	{
-		return src;
+		return vecs[0];
 	}
 	public Vector max()
 	{
-		return Vector.plus(
-				src,
-				dim
-				);
+		return vecs[1];
 	}
 	public String toString()
 	{
-		return "src: " + src + " dim: " + dim;
+		return "min: " + vecs[0] + " max: " + vecs[1];
 	}
 	
+	public boolean intersects(
+			Ray r,
+			double t0,
+			double t1
+			)
+	{
+		double tmin, tmax, tymin, tymax, tzmin, tzmax;
+        
+		tmin = (vecs[r.sign[0]].x - r.origin.x) * r.inv_direction.x;                                             
+		tmax = (vecs[1-r.sign[0]].x - r.origin.x) * r.inv_direction.x;                                           
+		tymin = (vecs[r.sign[1]].y - r.origin.y) * r.inv_direction.y;                                           
+		tymax = (vecs[1-r.sign[1]].y - r.origin.y) * r.inv_direction.y;                                          
+//		System.out.printf("tmin: %f, tmax: %f \n", tmin, tmax);
+//		System.out.printf("tymin: %f, tymax: %f \n", tymin, tymax);
+		if ( (tmin > tymax) || (tymin > tmax) )                                                                              
+		  return false;
+		if (tymin > tmin) 
+		  tmin = tymin;                                                                                                      
+		if (tymax < tmax)
+		  tmax = tymax;
+//		System.out.printf("tmin: %f, tmax: %f \n", tmin, tmax);
+//		System.out.printf("tymin: %f, tymax: %f \n", tymin, tymax);
+		tzmin = (vecs[r.sign[2]].z - r.origin.z) * r.inv_direction.z;                                            
+		tzmax = (vecs[1-r.sign[2]].z - r.origin.z) * r.inv_direction.z;                                          
+//		System.out.printf("vecs[r.sign[2]].z: %f, r.origin.z: %f, r.inv_direction.z: %f \n", vecs[r.sign[2]].z, r.origin.z, r.inv_direction.z);
+//		System.out.printf("vecs[1 - r.sign[2]].z: %f, r.origin.z: %f, r.inv_direction.z: %f \n", vecs[1 - r.sign[2]].z, r.origin.z, r.inv_direction.z);
+//		System.out.printf("tzmin: %f, tzmax: %f \n", tzmin, tzmax);
+		if ( (tmin > tzmax) || (tzmin > tmax) )                                                                              
+		  return false;                                                                                                      
+		if (tzmin > tmin)                                                                                                    
+		  tmin = tzmin;                                                                                                      
+		if (tzmax < tmax)
+		  tmax = tzmax;
+//		System.out.printf("tmin: %f, tmax: %f \n", tmin, tmax);
+		return ( (tmin < t1) && (tmax > t0) );
+	}
+
 }

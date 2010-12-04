@@ -100,6 +100,10 @@ public class Camera {
 		up.normalize();
 		
 	}
+	public Vector pos()
+	{
+		return pos;
+	}
 	public int x()
 	{
 		return view.x;

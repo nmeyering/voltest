@@ -51,11 +51,11 @@ public class App
 		
 		box = new Box(
 			new Vector(
-					-5,
-					-5,
-					-50
+					-8,
+					5,
+					-20
 					),
-					10
+					5
 				);
 		
 		cam = new Camera(
@@ -66,14 +66,35 @@ public class App
 		frame.add( panel );
 		frame.setVisible( true );
 		
+//		System.out.println(box);
+//		System.out.println(	box.intersects(
+//				new Ray(
+//						cam.pos(),
+//						MathUtil.unproject(
+//								new Vector(200,200,0),
+//								cam)
+//						),
+//				-10000,
+//				10000)
+//			);
 		inc = 5;
-		draw();
-		cam.printGizmo();
-		cam.rotateY( Math.toRadians( 15 ) );
-		cam.printGizmo();
-//		draw();
-		cam.rotateX( Math.toRadians( 15 ));
-		cam.printGizmo();
+//		cam.printGizmo();
+//		cam.rotateY( Math.toRadians( 45 ) );
+		while (true){
+			draw();
+			try{
+				Thread.sleep(1000);
+			}
+			catch(InterruptedException e)
+			{
+				
+			}
+			cam.translate( new Vector(-1,1.5,-0.5));
+			cam.rotateX( Math.toRadians(15) );
+		}
+//		cam.printGizmo();
+//		cam.rotateX( Math.toRadians( 15 ));
+//		cam.printGizmo();
 //		System.out.println(MathUtil.rotationMatrix(new Vector(1,0,0), Math.toRadians(45)));
 	}
 	
@@ -100,15 +121,15 @@ public class App
 		{
 			for( int j = 0; j < size.height; ++j )
 			{
-				if(	Ray.intersects(
-								new Vector(
-										i,
-										j,
-										0
+				if(	box.intersects(
+						new Ray(
+								cam.pos(),
+								MathUtil.unproject(
+										new Vector(i,j,0),
+										cam)
 								),
-								box,
-								cam
-						)
+						-10000,
+						10000)
 					)
 					panel.setPixel(
 							i,
