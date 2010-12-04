@@ -15,6 +15,7 @@ public class App
 	static byte[] clearData;
 	static Dimension size;
 	static DataBuffer data;
+	static int inc;
 	
 	private static final int[] SET = {0x00};
 	
@@ -27,7 +28,7 @@ public class App
 		clearData = new byte[ size.width * size.height ];
 		Arrays.fill(
 				clearData,
-				(byte) 0xFF
+				(byte) 0x88
 				);
 		
 		data = new DataBufferByte( 
@@ -54,26 +55,15 @@ public class App
 		System.out.println( box );
 		cam = new Camera(
 				size.width,
-				size.height,
-				Math.toRadians( 60 ),
-				(double)size.width/size.height,
-				1,
-				100
+				size.height
 				);
 		
 		frame.add( panel );
 		frame.setVisible( true );
 		
-		System.out.println(
-				Ray.intersection(new Vector(0,0,0), box, cam)
-				);
-		System.out.println(
-				Util.unproject(new Vector(0,0,0), cam)
-				);
-		System.out.println(
-				Ray.intersects(new Vector(0,0,0), box, cam)
-				);
+		cam.mvp().printFormatted();
 		
+		inc = 5;
 		while(true)
 			draw();
 	}
@@ -81,7 +71,11 @@ public class App
 
 	public static void draw()
 	{
-//		box.src.z += 5;
+		if (box.src.z > -25 || box.src.z < -80)
+			inc = -inc;
+		box.src.z += inc;
+		System.out.println(box.src.z);
+		
 		data = new DataBufferByte(
 			clearData,
 			size.width

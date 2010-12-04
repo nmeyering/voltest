@@ -8,7 +8,7 @@ public class Ray
 			Camera c
 			)
 	{
-		Vector ray = Util.unproject(
+		Vector ray = MathUtil.unproject(
 						win,
 						c
 						);

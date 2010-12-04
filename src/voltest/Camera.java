@@ -25,7 +25,7 @@ public class Camera {
 		this(
 			width,
 			height,
-			Math.toRadians( 60 ),
+			60,
 			(double)width/height,
 			1,
 			100
@@ -40,7 +40,7 @@ public class Camera {
 			int zFar
 			)
 	{
-		mvp = Util.perspectiveMatrix(
+		mvp = MathUtil.perspectiveMatrix(
 				Math.toRadians( fovy ),
 				aspect,
 				zNear,
