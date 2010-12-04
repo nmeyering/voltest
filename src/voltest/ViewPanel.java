@@ -2,18 +2,10 @@ package voltest;
 
 import javax.swing.JPanel;
 
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.Point;
-import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
-import java.awt.image.ColorModel;
-import java.awt.image.ComponentSampleModel;
 import java.awt.image.DataBuffer;
-import java.awt.image.DataBufferByte;
-import java.awt.image.DataBufferInt;
 import java.awt.image.Raster;
 import java.awt.image.SampleModel;
 import java.awt.image.SinglePixelPackedSampleModel;
@@ -21,32 +13,34 @@ import java.awt.image.WritableRaster;
 
 public class ViewPanel extends JPanel
 {
-	SampleModel sm = new SinglePixelPackedSampleModel(
+	
+	SampleModel sm;
+	WritableRaster raster;
+	
+	public ViewPanel( Dimension size, DataBuffer data )
+	{
+		super();
+		this.setSize( size );
+		sm = new SinglePixelPackedSampleModel(
 			DataBuffer.TYPE_BYTE,
-			320,
-			240,
+			this.getWidth(),
+			this.getHeight(),
 			new int[] {0xFF}
 			);
-	DataBuffer data =
-		new DataBufferByte(
-				320*240
-				);
-	WritableRaster raster =
-		Raster.createWritableRaster(
-				sm,
-				data,
-				null
-				);
-	private int[] SET = {0xFF};
+		raster = Raster.createWritableRaster(
+			sm,
+			data,
+			null
+			);
+	}
 	
 	public void paint( Graphics g )
 	{
 		BufferedImage img = new BufferedImage(
-				320,
-				240,
+				getWidth(),
+				getHeight(),
 				BufferedImage.TYPE_BYTE_GRAY
 				);
-		App.draw();
 		img.setData( raster );
 		g.drawImage(
 				img,
@@ -55,12 +49,13 @@ public class ViewPanel extends JPanel
 				null);
 	}
 	
-	public void setPixel( int x, int y )
+	public void setPixel( int x, int y, int[] value )
 	{
 		raster.setPixel(
 				x,
 				y,
-				SET
+				value
 				);
 	}	
+	
 }

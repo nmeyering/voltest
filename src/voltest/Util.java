@@ -2,19 +2,8 @@ package voltest;
 
 import java.awt.Rectangle;
 
-public class Context
+public class Util
 {
-	public Rectangle view;
-	public Matrix mvp;
-	
-	public Context(
-			Rectangle view,
-			Matrix mvp
-			)
-	{
-		this.view = view;
-		this.mvp = mvp;
-	}
 	public static Matrix perspectiveMatrix(
 			double fovy,
 			double aspect,
@@ -35,13 +24,13 @@ public class Context
 	
 	public static Vector unproject(
 			Vector win,
-			Context c
+			Camera c
 			)
 	{
-		return c.mvp.invert().multiply( 
+		return c.mvp().invert().multiply( 
 				new Vector(
-					(2.0 * (win.x - c.view.x)) / c.view.width - 1,
-					(2.0 * (win.y - c.view.y)) / c.view.height - 1,
+					(2.0 * (win.x - c.x())) / c.w() - 1,
+					(2.0 * (win.y - c.y())) / c.h() - 1,
 					2.0 * (win.z) - 1,
 					1
 					)

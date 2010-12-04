@@ -60,5 +60,9 @@ public class Box
 				dim
 				);
 	}
+	public String toString()
+	{
+		return "src: " + src + " dim: " + dim;
+	}
 	
 }
