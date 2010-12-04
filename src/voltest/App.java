@@ -13,6 +13,7 @@ public class App
 	static Camera cam;
 	static Box box;
 	static byte[] clearData;
+	static int[] clearDataInt;
 	static Dimension size;
 	static DataBuffer data;
 	static int inc;
@@ -26,6 +27,11 @@ public class App
 				240
 				);
 		clearData = new byte[ size.width * size.height ];
+		clearDataInt = new int[ size.width * size.height ];
+		Arrays.fill(
+				clearDataInt,
+				0x88
+				);
 		Arrays.fill(
 				clearData,
 				(byte) 0x88
@@ -52,7 +58,6 @@ public class App
 					10
 				);
 		
-		System.out.println( box );
 		cam = new Camera(
 				size.width,
 				size.height
@@ -61,26 +66,35 @@ public class App
 		frame.add( panel );
 		frame.setVisible( true );
 		
-		cam.mvp().printFormatted();
-		
 		inc = 5;
-		while(true)
-			draw();
+		draw();
+		cam.printGizmo();
+		cam.rotateY( Math.toRadians( 15 ) );
+		cam.printGizmo();
+//		draw();
+		cam.rotateX( Math.toRadians( 15 ));
+		cam.printGizmo();
+//		System.out.println(MathUtil.rotationMatrix(new Vector(1,0,0), Math.toRadians(45)));
 	}
 	
 
 	public static void draw()
 	{
-		if (box.src.z > -25 || box.src.z < -80)
-			inc = -inc;
-		box.src.z += inc;
-		System.out.println(box.src.z);
+//		if (box.src.z > -15 || box.src.z < -50)
+//			inc = -inc;
+//		box.src.z += inc;
 		
 		data = new DataBufferByte(
 			clearData,
 			size.width
 			* size.height
 			);
+		panel.raster.setPixels(
+				0,
+				0,
+				size.width,
+				size.height,
+				clearDataInt);
 		
 		for( int i = 0; i < size.width; ++i )
 		{
@@ -96,7 +110,6 @@ public class App
 								cam
 						)
 					)
-//					System.out.printf("setting pixel (%d,%d)\n", i, j);
 					panel.setPixel(
 							i,
 							j,

@@ -5,6 +5,7 @@ import java.awt.Rectangle;
 public class Camera {
 	private Matrix mvp;
 	private Rectangle view;
+	private Vector pos, up, right, forward, move;
 	
 	public Camera()
 	{
@@ -44,17 +45,61 @@ public class Camera {
 				Math.toRadians( fovy ),
 				aspect,
 				zNear,
-				zFar
-				);
+				zFar);
 		view = new Rectangle(
 				0,
 				0,
 				width,
-				height
-				);
-				
+				height);
+		move = new Vector(0, 0, 0);
+		pos = new Vector(0, 0, 0);
+		right = new Vector(1, 0, 0);
+		up = new Vector(0, 1, 0);
+		forward = new Vector(0, 0, -1);
 	}
 	
+	public void translate(
+			Vector v)
+	{
+		pos = Vector.plus(pos, v);
+	}
+	
+	public void rotateX(
+			double angle)
+	{
+		Matrix mat = MathUtil.rotationMatrix(
+				right,
+				-angle);
+		forward = mat.multiply( forward );
+		up = Vector.crossProduct(
+				forward,
+				right);
+		right = Vector.crossProduct(
+				up,
+				forward);
+		forward.normalize();
+		right.normalize();
+		up.normalize();
+		
+	}
+	public void rotateY(
+			double angle)
+	{
+		Matrix mat = MathUtil.rotationMatrix(
+				new Vector(0, 1, 0),
+				-angle);
+		forward = mat.multiply( forward );
+		right = Vector.crossProduct(
+				new Vector(0, 1, 0),
+				forward);
+		up = Vector.crossProduct(
+				forward,
+				right);
+		forward.normalize();
+		right.normalize();
+		up.normalize();
+		
+	}
 	public int x()
 	{
 		return view.x;
@@ -74,5 +119,11 @@ public class Camera {
 	public Matrix mvp()
 	{
 		return mvp;
+	}
+	public void printGizmo()
+	{
+		System.out.println("up: " + up);
+		System.out.println("right: " + right);
+		System.out.println("forward: " + forward);
 	}
 }
