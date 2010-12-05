@@ -33,6 +33,19 @@ public class Box
 	{
 		return vecs[1];
 	}
+	public boolean contains( Vector v )
+	{
+		Vector min = min();
+		Vector max = max();
+		return (
+			v.x >= min.x
+			&& v.y >= min.y
+			&& v.z >= min.z
+			&& v.x <= max.x
+			&& v.y <= max.y
+			&& v.z <= max.z 
+			);
+	}
 	public String toString()
 	{
 		return "min: " + vecs[0] + " max: " + vecs[1];

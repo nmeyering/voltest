@@ -30,11 +30,11 @@ public class App
 		clearDataInt = new int[ size.width * size.height ];
 		Arrays.fill(
 				clearDataInt,
-				0x88
+				46
 				);
 		Arrays.fill(
 				clearData,
-				(byte) 0x88
+				(byte) 46
 				);
 		
 		data = new DataBufferByte( 
@@ -51,11 +51,11 @@ public class App
 		
 		box = new Box(
 			new Vector(
-					-8,
-					5,
+					-5,
+					-5,
 					-20
 					),
-					5
+					10
 				);
 		
 		cam = new Camera(
@@ -63,10 +63,12 @@ public class App
 				size.height
 				);
 		
+		cam.translate(new Vector(2,-1,3));
+		
 		frame.add( panel );
 		frame.setVisible( true );
 		
-//		System.out.println(box);
+		System.out.println(box);
 //		System.out.println(	box.intersects(
 //				new Ray(
 //						cam.pos(),
@@ -77,9 +79,13 @@ public class App
 //				-10000,
 //				10000)
 //			);
+//		System.out.println("Intersections: ");
+//		for ( Vector i : Ray.intersections(new Vector(200,200,0), box, cam))
+//			System.out.println( i );
 		inc = 5;
 //		cam.printGizmo();
 //		cam.rotateY( Math.toRadians( 45 ) );
+//		draw();
 		while (true){
 			draw();
 			try{
@@ -92,10 +98,6 @@ public class App
 			cam.translate( new Vector(-1,1.5,-0.5));
 			cam.rotateX( Math.toRadians(15) );
 		}
-//		cam.printGizmo();
-//		cam.rotateX( Math.toRadians( 15 ));
-//		cam.printGizmo();
-//		System.out.println(MathUtil.rotationMatrix(new Vector(1,0,0), Math.toRadians(45)));
 	}
 	
 
@@ -121,21 +123,31 @@ public class App
 		{
 			for( int j = 0; j < size.height; ++j )
 			{
-				if(	box.intersects(
-						new Ray(
-								cam.pos(),
-								MathUtil.unproject(
-										new Vector(i,j,0),
-										cam)
-								),
-						-10000,
-						10000)
+				if(	
+					box.intersects(
+					new Ray(
+						cam.pos(),
+							MathUtil.unproject(
+							new Vector(i,j,0),
+							cam)
+						),
+					-10000,
+					10000)
 					)
+				{
+					int len = 
+						Ray.intersections(
+								new Vector(i,j,0),
+								box,
+								cam);
 					panel.setPixel(
-							i,
-							j,
-							SET
-							);
+						i,
+						j,
+						new int[] {len*127}
+//						SET
+						);
+					
+				}
 			}
 		}		
 		panel.repaint();

@@ -1,9 +1,14 @@
 package voltest;
 
-public class Vector {
+public class Vector implements Comparable{
 
 	public final static double EPSILON = 0.0000000001;
 
+	public final static Vector[] versor = {
+		new Vector(1,0,0),
+		new Vector(0,1,0),
+		new Vector(0,0,1)
+		};
 	public double x;
 	public double y;
 	public double z;
@@ -149,4 +154,21 @@ public class Vector {
 	{
 		System.out.printf("(%2.4f, %2.4f, %2.4f, %2.4f)", x, y, z, w);
 	}
+	
+	public boolean isVersor()
+	{
+		for( int i = 0; i < versor.length; ++i )
+			if (this.equals( versor[i] ))
+				return true;
+		return false;
+	}
+
+	public int compareTo(Object v) {
+		if (!(v instanceof Vector))
+			return 1;
+		if (minus((Vector)v,this).norm() < 3*EPSILON )
+			return 0;
+		return 1;
+	}
+	
 }
