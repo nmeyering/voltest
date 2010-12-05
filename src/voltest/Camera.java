@@ -62,6 +62,7 @@ public class Camera {
 			Vector v)
 	{
 		pos = Vector.plus(pos, v);
+		mvp = mvp.multiply(MathUtil.translationMatrix( v ));
 	}
 	
 	public void rotateX(
@@ -80,6 +81,7 @@ public class Camera {
 		forward.normalize();
 		right.normalize();
 		up.normalize();
+		mvp = mvp.multiply(mat);
 		
 	}
 	public void rotateY(
@@ -98,7 +100,7 @@ public class Camera {
 		forward.normalize();
 		right.normalize();
 		up.normalize();
-		
+		mvp = mvp.multiply(mat);
 	}
 	public Vector pos()
 	{
@@ -123,6 +125,10 @@ public class Camera {
 	public Matrix mvp()
 	{
 		return mvp;
+	}
+	public Rectangle view()
+	{
+		return view;
 	}
 	public void printGizmo()
 	{

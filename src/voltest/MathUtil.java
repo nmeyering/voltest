@@ -24,13 +24,14 @@ public class MathUtil
 	
 	public static Vector unproject(
 			Vector win,
-			Camera c
+			Matrix mvp,
+			Rectangle view
 			)
 	{
-		return c.mvp().invert().multiply( 
+		return mvp.invert().multiply( 
 				new Vector(
-					(2.0 * (win.x - c.x())) / c.w() - 1,
-					(2.0 * (win.y - c.y())) / c.h() - 1,
+					(2.0 * (win.x - view.x)) / view.width - 1,
+					(2.0 * (win.y - view.y)) / view.height - 1,
 					2.0 * (win.z) - 1,
 					1
 					)
@@ -59,5 +60,16 @@ public class MathUtil
 
 		return ret;
 	
+	}
+	public static Matrix translationMatrix(
+			Vector a
+			)
+	{
+		Matrix ret = Matrix.createIdentity(4);
+		ret.setValue(0, 3, a.x);
+		ret.setValue(1, 3, a.y);
+		ret.setValue(2, 3, a.z);
+		
+		return ret;
 	}
 }

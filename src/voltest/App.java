@@ -53,7 +53,7 @@ public class App
 			new Vector(
 					-5,
 					-5,
-					-20
+					-30
 					),
 					10
 				);
@@ -63,40 +63,34 @@ public class App
 				size.height
 				);
 		
-		cam.translate(new Vector(2,-1,3));
-		
 		frame.add( panel );
 		frame.setVisible( true );
 		
-		System.out.println(box);
+//		Vector v = new Vector(160,120,0);
+//		System.out.println(box);
 //		System.out.println(	box.intersects(
 //				new Ray(
 //						cam.pos(),
 //						MathUtil.unproject(
-//								new Vector(200,200,0),
+//								v,
 //								cam)
 //						),
 //				-10000,
 //				10000)
 //			);
 //		System.out.println("Intersections: ");
-//		for ( Vector i : Ray.intersections(new Vector(200,200,0), box, cam))
-//			System.out.println( i );
+//		for ( Vector i : Ray.intersections( v, box, cam))
+//		{
+//			System.out.print( i + ": " + box.contains(i) + "\n" );
+//		}
 		inc = 5;
 //		cam.printGizmo();
 //		cam.rotateY( Math.toRadians( 45 ) );
 //		draw();
 		while (true){
 			draw();
-			try{
-				Thread.sleep(1000);
-			}
-			catch(InterruptedException e)
-			{
-				
-			}
-			cam.translate( new Vector(-1,1.5,-0.5));
-			cam.rotateX( Math.toRadians(15) );
+			cam.translate( new Vector(-.01,0,0));
+			//cam.rotateX( Math.toRadians(15) );
 		}
 	}
 	
@@ -118,7 +112,9 @@ public class App
 				size.width,
 				size.height,
 				clearDataInt);
+		Matrix inv = cam.mvp().invert();
 		
+		long tmp = System.currentTimeMillis();
 		for( int i = 0; i < size.width; ++i )
 		{
 			for( int j = 0; j < size.height; ++j )
@@ -129,27 +125,30 @@ public class App
 						cam.pos(),
 							MathUtil.unproject(
 							new Vector(i,j,0),
-							cam)
+							inv,
+							cam.view())
 						),
 					-10000,
 					10000)
 					)
 				{
-					int len = 
-						Ray.intersections(
-								new Vector(i,j,0),
-								box,
-								cam);
+//					int len = 
+//						Ray.intersections(
+//								new Vector(i,j,0),
+//								box,
+//								cam);
 					panel.setPixel(
 						i,
 						j,
-						new int[] {len*127}
-//						SET
+//						new int[] {len*127}
+						SET
 						);
 					
 				}
 			}
 		}		
+		System.out.println(
+				System.currentTimeMillis() - tmp);
 		panel.repaint();
 	}
 }

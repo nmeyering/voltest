@@ -24,7 +24,7 @@ public class Ray
 		sign[2] = (inv_direction.z < 0) ? 1 : 0;
 	}
 	
-	public static int intersections(
+	public static List<Vector> intersections(
 			Vector win,
 			Box box,
 			Camera c
@@ -34,7 +34,8 @@ public class Ray
 		
 		Vector ray = Vector.minus( MathUtil.unproject(
 						win,
-						c
+						c.mvp(),
+						c.view()
 						),
 						c.pos()
 						);
@@ -65,7 +66,7 @@ public class Ray
 				ret.add(tmp);
 			}
 		}
-		return len;
+		return ret;
 	}
 	
 }

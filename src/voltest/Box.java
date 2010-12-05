@@ -35,8 +35,10 @@ public class Box
 	}
 	public boolean contains( Vector v )
 	{
-		Vector min = min();
-		Vector max = max();
+		double e = 0.0001;
+		Vector epsilon = new Vector(e, e, e);
+		Vector min = Vector.minus(min(), epsilon);
+		Vector max = Vector.plus(max(), epsilon);
 		return (
 			v.x >= min.x
 			&& v.y >= min.y
