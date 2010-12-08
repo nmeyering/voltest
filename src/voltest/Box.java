@@ -2,6 +2,7 @@ package voltest;
 public class Box
 {
 	public Vector vecs[]; //[0] - min, [1] - max
+	public double dim;
 	
 	public Box(
 			Vector min,
@@ -9,6 +10,7 @@ public class Box
 			)
 	{
 		this.vecs = new Vector[] {min,max};
+		this.dim = Vector.minus(vecs[1], vecs[0]).norm();
 	}
 	
 	public Box(
@@ -24,6 +26,7 @@ public class Box
 				src.z + dim
 				)
 			);
+		this.dim = dim;
 	}
 	public Vector min()
 	{
@@ -88,6 +91,11 @@ public class Box
 		  tmax = tzmax;
 //		System.out.printf("tmin: %f, tmax: %f \n", tmin, tmax);
 		return ( (tmin < t1) && (tmax > t0) );
+	}
+
+	public Vector center()
+	{
+		return Vector.multiply(0.5, Vector.minus(max(), min()) );
 	}
 
 }

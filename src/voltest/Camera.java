@@ -26,7 +26,7 @@ public class Camera {
 		this(
 			width,
 			height,
-			60,
+			Math.toRadians(60),
 			(double)width/height,
 			1,
 			100
@@ -42,7 +42,7 @@ public class Camera {
 			)
 	{
 		mvp = MathUtil.perspectiveMatrix(
-				Math.toRadians( fovy ),
+				fovy,
 				aspect,
 				zNear,
 				zFar);
@@ -58,11 +58,29 @@ public class Camera {
 		forward = new Vector(0, 0, -1);
 	}
 	
-	public void translate(
+	public void translateX(
 			Vector v)
 	{
-		pos = Vector.plus(pos, v);
-		mvp = mvp.multiply(MathUtil.translationMatrix( v ));
+		Vector tmp = Vector.plus(pos,
+				Vector.multiply(
+						v.x,
+						right
+						)
+				);
+		pos = tmp;
+		mvp = mvp.multiply(MathUtil.translationMatrix( tmp ));
+	}
+	public void translateZ(
+			Vector v)
+	{
+		Vector tmp = Vector.plus(pos,
+				Vector.multiply(
+						v.z,
+						forward
+						)
+				);
+		pos = tmp;
+		mvp = mvp.multiply(MathUtil.translationMatrix( tmp ));
 	}
 	
 	public void rotateX(
@@ -135,5 +153,22 @@ public class Camera {
 		System.out.println("up: " + up);
 		System.out.println("right: " + right);
 		System.out.println("forward: " + forward);
+	}
+	public void rotateYaround(Vector center, double angle)
+	{
+		Matrix mat = MathUtil.rotationMatrix(
+				new Vector(0, 1, 0),
+				-angle);
+		forward = mat.multiply( forward );
+		right = Vector.crossProduct(
+				new Vector(0, 1, 0),
+				forward);
+		up = Vector.crossProduct(
+				forward,
+				right);
+		forward.normalize();
+		right.normalize();
+		up.normalize();
+		mvp = mvp.multiply(mat);
 	}
 }

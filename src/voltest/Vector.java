@@ -16,7 +16,7 @@ public class Vector implements Comparable{
 
 	public Vector(double x, double y, double z, double w)
 	{
-	this.x = x;
+		this.x = x;
 		this.y = y;
 		this.z = z;
 		this.w = w;
@@ -42,10 +42,12 @@ public class Vector implements Comparable{
 	}
 	
 	public Vector(Vector copy) {
-		this.x = copy.x;
-		this.y = copy.y;
-		this.z = copy.z;
-		this.w = copy.w;
+		this(
+				copy.x,
+				copy.y,
+				copy.z,
+				copy.w
+				);
 	}
 
 	public static Vector plus(

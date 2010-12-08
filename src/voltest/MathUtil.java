@@ -28,7 +28,7 @@ public class MathUtil
 			Rectangle view
 			)
 	{
-		return mvp.invert().multiply( 
+		return mvp.multiply( 
 				new Vector(
 					(2.0 * (win.x - view.x)) / view.width - 1,
 					(2.0 * (win.y - view.y)) / view.height - 1,
