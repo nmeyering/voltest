@@ -8,7 +8,7 @@ public class Ray
 {
 	public Vector origin, direction, inv_direction;
 	public int[] sign;
-	public static final int MAX = 16;
+	public static final int MAX = 128;
 	
 	public Ray(
 			Vector org,
@@ -57,6 +57,8 @@ public class Ray
 						(sample.z - box.min().z)/box.dim
 						);
 			ret += b;
+			if(win.x == 100.0 && win.y == 100.0)
+				System.out.println(ret);
 		}
 		return (byte)(255*ret/(Math.sqrt(3)*tex.size()));
 	}

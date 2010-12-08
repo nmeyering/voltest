@@ -22,6 +22,7 @@ public class App implements KeyListener
 	DataBuffer data;
 	int inc;
 	boolean drawing;
+	Texture3D tex;
 	
 	private final int[] SET = {0x00};
 	
@@ -70,17 +71,18 @@ public class App implements KeyListener
 				);
 		frame.add( panel );
 		frame.setVisible( true );
-		byte[][][] ball = new byte[64][64][64];
-		for(int i = 0; i < 64; ++i )
-			for(int j = 0; j < 64; ++j )
-				for(int k = 0; k < 64; ++k )
+		final int S = 128;
+		byte[][][] ball = new byte[S][S][S];
+		for(int i = 0; i < S; ++i )
+			for(int j = 0; j < S; ++j )
+				for(int k = 0; k < S; ++k )
 				{
-					int[] x = {Math.abs(i-32), Math.abs(j-32), Math.abs(k-32)};
-					int value = x[0]*x[0]+x[1]*x[1]+x[2]*x[2];
-					if(value < 32)
-						ball[i][j][k] = (byte)0xFF;
+					int[] x = {Math.abs(i-S/2), Math.abs(j-S/2), Math.abs(k-S/2)};
+					int value = (int)Math.sqrt(x[0]*x[0]+x[1]*x[1]+x[2]*x[2]);
+					if(value < S/2)
+						ball[i][j][k] = (byte)0x10;
 				}
-		Texture3D tex = new Texture3D(64);
+		tex = new Texture3D( ball );
 		
 		draw();
 		while(true)
@@ -142,32 +144,19 @@ public class App implements KeyListener
 //						10000)
 //						)
 					{
-						List<Vector> points = 
-							Ray.intersections(
+						byte col = 
+							Ray.collect(
 									new Vector(i,j,0),
 									box,
 									inv,
 									cam.view(),
-									cam.pos()
+									cam.pos(),
+									tex
 								);
-						int col = 0;
-						if(points.size() == 2)
-						{
-							col = (int) 
-									(
-									Vector.minus(
-									points.get(1),
-									points.get(0)
-									).norm()
-									*	box.dim
-									);
-						}
 						panel.setPixel(
 							i,
 							j,
 							new int[] {col}
-//							new int[] {len*127}
-//							SET
 							);
 					}
 			}
