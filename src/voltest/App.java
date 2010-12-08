@@ -14,62 +14,44 @@ import javax.swing.JFrame;
 
 public class App implements KeyListener
 {
-	ViewPanel panel;
-	Camera cam;
-	Box box;
-	byte[] clearData;
-	int[] clearDataInt;
-	Dimension size;
-	DataBuffer data;
-	int inc;
-	boolean drawing;
-	Texture3D tex;
+	private ViewPanel panel;
+	private Camera cam;
+	private Box box;
+	private Dimension size;
+	private int inc;
+	private boolean drawing;
+	private Texture3D tex;
 	
 	private final int[] SET = {0x00};
 	
 	public App()
 	{
 		size = new Dimension(
-				512,
-				512
-				);
-		clearData = new byte[ size.width * size.height ];
-		clearDataInt = new int[ size.width * size.height ];
-		Arrays.fill(
-				clearDataInt,
-				46
-				);
-		Arrays.fill(
-				clearData,
-				(byte) 46
-				);
-		data = new DataBufferByte( 
-				clearData,
-				size.width
-				* size.height
+				320,
+				240
 				);
 		JFrame frame = new JFrame();
 		panel = new ViewPanel(
-				size,
-				data
+				size
 				);
 		frame.addKeyListener(this);
 		box = new Box(
 			new Vector(
-					-2,
-					-2,
+					-5,
+					-5,
 					-25
 					),
-					4
+					10
 				);
 		cam = new Camera(
 				size.width,
 				size.height,
 				Math.toRadians(60),
-				3.0/4.0,
+				size.width/size.height,
 				1,
 				100
 				);
+		cam.rotateY(0.005);
 		frame.add( panel );
 		frame.setVisible( true );
 		final int S = 256;
@@ -79,15 +61,16 @@ public class App implements KeyListener
 			for(int j = 0; j < S; ++j )
 				for(int k = 0; k < S; ++k )
 				{
-					int[] x = {Math.abs(i-S/2), Math.abs(j-S/2), Math.abs(k-S/2)};
-					int value = (int)Math.sqrt(x[0]*x[0]+x[1]*x[1]+x[2]*x[2]);
-					ball[i][j][k] = (byte)r.nextInt(32);
-					if(value < S/2)
-						ball[i][j][k] = (byte)0x20;
-					if( x[0]< S/5 && x[1] < S/5 && x[2] < S/5)
-						ball[i][j][k] = (byte)0x40;
-					if( i < S/5 && j < S/5 && k < S/5)
-						ball[i][j][k] = (byte)0x40;
+						ball[i][j][k] = (byte)0x50;
+//					int[] x = {Math.abs(i-S/2), Math.abs(j-S/2), Math.abs(k-S/2)};
+//					int value = (int)Math.sqrt(x[0]*x[0]+x[1]*x[1]+x[2]*x[2]);
+//					ball[i][j][k] = (byte)r.nextInt(32);
+//					if(value < S/2)
+//						ball[i][j][k] = (byte)0x20;
+//					if( x[0]< S/5 && x[1] < S/5 && x[2] < S/5)
+//						ball[i][j][k] = (byte)0x40;
+//					if( i < S/5 && j < S/5 && k < S/5)
+//						ball[i][j][k] = (byte)0x40;
 				}
 		tex = new Texture3D( ball );
 		
@@ -116,17 +99,7 @@ public class App implements KeyListener
 	public void draw()
 	{
 		drawing = true;
-		data = new DataBufferByte(
-			clearData,
-			size.width
-			* size.height
-			);
-		panel.raster.setPixels(
-				0,
-				0,
-				size.width,
-				size.height,
-				clearDataInt);
+		panel.clear( 46 );
 		Matrix inv = cam.mvp().invert();
 		long tmp = System.currentTimeMillis();
 		for( int i = 0; i < size.width; ++i )
@@ -161,7 +134,7 @@ public class App implements KeyListener
 						panel.setPixel(
 							i,
 							j,
-							new int[] {col}
+							col
 							);
 					}
 			}
