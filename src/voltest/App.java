@@ -8,6 +8,7 @@ import java.awt.image.DataBufferByte;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
 
 import javax.swing.JFrame;
 
@@ -29,8 +30,8 @@ public class App implements KeyListener
 	public App()
 	{
 		size = new Dimension(
-				256,
-				256
+				512,
+				512
 				);
 		clearData = new byte[ size.width * size.height ];
 		clearDataInt = new int[ size.width * size.height ];
@@ -55,11 +56,11 @@ public class App implements KeyListener
 		frame.addKeyListener(this);
 		box = new Box(
 			new Vector(
-					-5,
-					-5,
+					-2,
+					-2,
 					-25
 					),
-					10
+					4
 				);
 		cam = new Camera(
 				size.width,
@@ -71,7 +72,8 @@ public class App implements KeyListener
 				);
 		frame.add( panel );
 		frame.setVisible( true );
-		final int S = 128;
+		final int S = 256;
+		Random r = new Random();
 		byte[][][] ball = new byte[S][S][S];
 		for(int i = 0; i < S; ++i )
 			for(int j = 0; j < S; ++j )
@@ -79,8 +81,13 @@ public class App implements KeyListener
 				{
 					int[] x = {Math.abs(i-S/2), Math.abs(j-S/2), Math.abs(k-S/2)};
 					int value = (int)Math.sqrt(x[0]*x[0]+x[1]*x[1]+x[2]*x[2]);
+					ball[i][j][k] = (byte)r.nextInt(32);
 					if(value < S/2)
-						ball[i][j][k] = (byte)0x10;
+						ball[i][j][k] = (byte)0x20;
+					if( x[0]< S/5 && x[1] < S/5 && x[2] < S/5)
+						ball[i][j][k] = (byte)0x40;
+					if( i < S/5 && j < S/5 && k < S/5)
+						ball[i][j][k] = (byte)0x40;
 				}
 		tex = new Texture3D( ball );
 		
@@ -121,8 +128,6 @@ public class App implements KeyListener
 				size.height,
 				clearDataInt);
 		Matrix inv = cam.mvp().invert();
-		System.out.println(cam.pos());
-		
 		long tmp = System.currentTimeMillis();
 		for( int i = 0; i < size.width; ++i )
 		{

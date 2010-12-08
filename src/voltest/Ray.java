@@ -40,9 +40,10 @@ public class Ray
 			return 0;
 		Vector start = points.get(0);
 		Vector dir = Vector.minus(points.get(1),start);
+		int samples = (int)(MAX * (dir.norm()/(Math.sqrt(3)*box.dim)));
 		double ret = 0.0;
 		byte b;
-		for(int i = 0; i < MAX; ++i)
+		for(int i = 0; i < samples; ++i)
 		{
 			Vector sample = Vector.plus(
 					start,
@@ -57,10 +58,9 @@ public class Ray
 						(sample.z - box.min().z)/box.dim
 						);
 			ret += b;
-			if(win.x == 100.0 && win.y == 100.0)
-				System.out.println(ret);
 		}
-		return (byte)(255*ret/(Math.sqrt(3)*tex.size()));
+		b = (byte)(Math.max(Math.min(ret * 0.03, 255), 0));
+		return b;
 	}
 	public static List<Vector> intersections(
 			Vector win,
