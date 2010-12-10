@@ -175,16 +175,16 @@ public class App implements KeyListener
 				cam.rotateX(Math.toRadians(-5));
 				break;
 			case KeyEvent.VK_W: 
-				cam.translateZ(-0.1);
+				cam.translateZ(-1);
 				break;
 			case KeyEvent.VK_S: 
-				cam.translateZ(0.1);
+				cam.translateZ(1);
 				break;
 			case KeyEvent.VK_A: 
-				cam.translateX(0.1);
+				cam.translateX(1);
 				break;
 			case KeyEvent.VK_D: 
-				cam.translateX(-0.1);
+				cam.translateX(-1);
 				break;
 			case KeyEvent.VK_ESCAPE: 
 				System.exit(0);
