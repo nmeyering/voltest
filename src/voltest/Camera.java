@@ -59,28 +59,28 @@ public class Camera {
 	}
 	
 	public void translateX(
-			Vector v)
+			double amount)
 	{
 		Vector tmp = Vector.plus(pos,
 				Vector.multiply(
-						v.x,
+						amount,
 						right
 						)
 				);
 		pos = tmp;
-		mvp = mvp.multiply(MathUtil.translationMatrix( tmp ));
+		mvp = mvp.multiply(MathUtil.translationMatrix( Vector.minus(tmp) ));
 	}
 	public void translateZ(
-			Vector v)
+			double amount)
 	{
 		Vector tmp = Vector.plus(pos,
 				Vector.multiply(
-						v.z,
+						amount,
 						forward
 						)
 				);
 		pos = tmp;
-		mvp = mvp.multiply(MathUtil.translationMatrix( tmp ));
+		mvp = mvp.multiply(MathUtil.translationMatrix( Vector.minus(tmp) ));
 	}
 	
 	public void rotateX(
@@ -100,7 +100,6 @@ public class Camera {
 		right.normalize();
 		up.normalize();
 		mvp = mvp.multiply(mat);
-		
 	}
 	public void rotateY(
 			double angle)
@@ -156,6 +155,7 @@ public class Camera {
 	}
 	public void rotateYaround(Vector center, double angle)
 	{
+		this.mvp.multiply(MathUtil.translationMatrix(Vector.minus(center,this.pos)));
 		Matrix mat = MathUtil.rotationMatrix(
 				new Vector(0, 1, 0),
 				-angle);
@@ -170,5 +170,6 @@ public class Camera {
 		right.normalize();
 		up.normalize();
 		mvp = mvp.multiply(mat);
+		this.mvp.multiply(MathUtil.translationMatrix(Vector.minus(this.pos,center)));
 	}
 }

@@ -1,6 +1,7 @@
 package voltest;
 
-public class Vector implements Comparable{
+public class Vector
+{
 
 	public final static double EPSILON = 0.0000000001;
 
@@ -163,14 +164,6 @@ public class Vector implements Comparable{
 			if (this.equals( versor[i] ))
 				return true;
 		return false;
-	}
-
-	public int compareTo(Object v) {
-		if (!(v instanceof Vector))
-			return 1;
-		if (minus((Vector)v,this).norm() < 3*EPSILON )
-			return 0;
-		return 1;
 	}
 	
 }

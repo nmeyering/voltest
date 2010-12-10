@@ -5,6 +5,13 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.image.DataBuffer;
 import java.awt.image.DataBufferByte;
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -54,6 +61,8 @@ public class App implements KeyListener
 		cam.rotateY(0.005);
 		frame.add( panel );
 		frame.setVisible( true );
+		
+		
 		final int S = 256;
 		Random r = new Random();
 		byte[][][] ball = new byte[S][S][S];
@@ -61,30 +70,34 @@ public class App implements KeyListener
 			for(int j = 0; j < S; ++j )
 				for(int k = 0; k < S; ++k )
 				{
-						ball[i][j][k] = (byte)0x50;
-//					int[] x = {Math.abs(i-S/2), Math.abs(j-S/2), Math.abs(k-S/2)};
-//					int value = (int)Math.sqrt(x[0]*x[0]+x[1]*x[1]+x[2]*x[2]);
-//					ball[i][j][k] = (byte)r.nextInt(32);
-//					if(value < S/2)
-//						ball[i][j][k] = (byte)0x20;
-//					if( x[0]< S/5 && x[1] < S/5 && x[2] < S/5)
-//						ball[i][j][k] = (byte)0x40;
-//					if( i < S/5 && j < S/5 && k < S/5)
-//						ball[i][j][k] = (byte)0x40;
+//						ball[i][j][k] = (byte)0x50;
+					int[] x = {Math.abs(i-S/2), Math.abs(j-S/2), Math.abs(k-S/2)};
+					int value = (int)Math.sqrt(x[0]*x[0]+x[1]*x[1]+x[2]*x[2]);
+					ball[i][j][k] = (byte)r.nextInt(48);
+					if(value < S/2)
+						ball[i][j][k] = (byte)0x20;
+					if( x[0]< S/5 && x[1] < S/5 && x[2] < S/5)
+						ball[i][j][k] = (byte)0x40;
+					if( i < S/5 && j < S/5 && k < S/5)
+						ball[i][j][k] = (byte)0x40;
 				}
 		tex = new Texture3D( ball );
+		try
+		{
+		tex.writeFile(
+				new File("test.vol")
+				);
+		}
+		catch( FileNotFoundException e )
+		{
+			e.printStackTrace();
+		}
+		
+		byte[] volume = new byte[4096];
+		Texture3D tex2 = new Texture3D( volume, 256 );
 		
 		draw();
-		while(true)
-		{
-//			try
-//			{
-//				Thread.sleep(500);
-//			}
-//			catch(InterruptedException e)
-//			{
-//			}
-		}
+		while(true);
 	}
 	
 	public static void main( String[] args )
@@ -150,10 +163,10 @@ public class App implements KeyListener
 		switch( code )
 		{
 			case KeyEvent.VK_RIGHT:
-				cam.rotateY(Math.toRadians(-5));
+				cam.rotateYaround(box.center(), Math.toRadians(-5));
 				break;
 			case KeyEvent.VK_LEFT: 
-				cam.rotateY(Math.toRadians(5));
+				cam.rotateYaround(box.center(), Math.toRadians(5));
 				break;
 			case KeyEvent.VK_UP: 
 				cam.rotateX(Math.toRadians(5));
@@ -162,16 +175,16 @@ public class App implements KeyListener
 				cam.rotateX(Math.toRadians(-5));
 				break;
 			case KeyEvent.VK_W: 
-				cam.translateZ(new Vector(0,0,-.05));
+				cam.translateZ(-0.1);
 				break;
 			case KeyEvent.VK_S: 
-				cam.translateZ(new Vector(0,0,.05));
+				cam.translateZ(0.1);
 				break;
 			case KeyEvent.VK_A: 
-				cam.translateX(new Vector(-.05,0,0));
+				cam.translateX(0.1);
 				break;
 			case KeyEvent.VK_D: 
-				cam.translateX(new Vector(.05,0,0));
+				cam.translateX(-0.1);
 				break;
 			case KeyEvent.VK_ESCAPE: 
 				System.exit(0);
