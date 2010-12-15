@@ -9,55 +9,52 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Arrays;
 
 public class Texture3D
 {
-	private byte data[][][];
-	private int size;
+	private int[] data;
+	private int dim;
+	private static final int depth = 3;
 
-	public Texture3D( int size ){
-		this.size = size;
-		this.data = new byte[ size ][ size ][ size ];
+	public Texture3D( int dim ){
+		this.dim = dim * dim * dim * depth;
+		this.data = new int[ this.dim ];
 	}
-	public Texture3D( byte[][][] in )
+	
+	public Texture3D( int[] in )
 	{
-		this.size = in.length;
+		this.dim = (int)Math.pow( (in.length / depth + 1), 1.0/3 );
+		if( this.dim < 1 || this.dim > 512 )
+			throw new IllegalArgumentException( "texture too small or too big ("
+					+ dim
+					+ ")."
+					);
 		this.data = in;
 	}
+	
 	public Texture3D( Texture3D copy )
 	{
 		this( copy.data );
 	}
-	public Texture3D(byte[] in, int dim) {
+	
+	public Texture3D(int[] in, int dim) {
+		this.dim = (int)Math.pow( (in.length / depth + 1), 1.0/3 );
+		if( this.dim < 1 || this.dim > 512 )
+			throw new IllegalArgumentException( "texture too small or too big ("
+					+ dim
+					+ ")."
+					);
+		this.dim = dim;
 		
-		int len = (int)Math.sqrt(dim*dim*dim);
-		if(len < in.length)
-			throw new IllegalArgumentException("Not enough space for given data.");
-		
-		this.size = dim;
-		
-		this.data = new byte[ dim ][ dim ][ dim ]; 
+		this.data = new int[ dim * dim * dim * depth ];
 		int x = 0, y = 0, z = 0;
-		for(int i = 0; i < len; ++i)
-		{
-			if(z>=dim)
-			{
-				z = 0;
-				y++;
-			}
-			if(y>=dim)
-			{
-				y = 0;
-				x++;
-			}
-			this.data[x][y][z] = in[i];
-			z++;
-		}
+		this.data = Arrays.copyOf(in, dim);
 	}
 	public Texture3D fromFile(File file) throws FileNotFoundException
 	{
 		int size = (int)file.length();
-		byte[] buffer = new byte[size];
+		int[] buffer = new int[size];
 		BufferedInputStream filein;
 		try
 		{
@@ -69,7 +66,7 @@ public class Texture3D
 			e.printStackTrace();
 		}
 		
-		return new Texture3D(buffer,(int)Math.pow(size, 2.0/3.0) + 1);
+		return new Texture3D( buffer );
 	}
 	public void writeFile(File file) throws FileNotFoundException
 	{
@@ -112,9 +109,9 @@ public class Texture3D
 		v = max(0, min(1, v));
 		w = max(0, min(1, w));
 		return data
-						[ (int)((size - 1) * u)]
-						[ (int)((size - 1) * v)]
-						[ (int)((size - 1) * w)];
+						[ (int)((dim - 1) * u)]
+						[ (int)((dim - 1) * v)]
+						[ (int)((dim - 1) * w)];
 	}
 	public void setData( byte[][][] in )
 	{
@@ -122,6 +119,6 @@ public class Texture3D
 	}
 	public int size()
 	{
-		return size;
+		return dim;
 	}
 }
