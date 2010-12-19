@@ -59,7 +59,7 @@ public class Ray
 						);
 			ret += b;
 		}
-		b = (byte)(Math.max(Math.min(ret * 0.03, 255), 0));
+		b = (byte)(Math.max(Math.min(ret * 0.15, 255), 0));
 		return b;
 	}
 	public static List<Vector> intersections(

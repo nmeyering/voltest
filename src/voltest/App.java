@@ -34,8 +34,8 @@ public class App implements KeyListener
 	public App()
 	{
 		size = new Dimension(
-				320,
-				240
+				1200,
+				900
 				);
 		JFrame frame = new JFrame();
 		panel = new ViewPanel(
@@ -58,8 +58,9 @@ public class App implements KeyListener
 				1,
 				100
 				);
-		cam.rotateY(0.005);
+		
 		frame.add( panel );
+		frame.pack();
 		frame.setVisible( true );
 		
 		
@@ -73,7 +74,8 @@ public class App implements KeyListener
 //						ball[i][j][k] = (byte)0x50;
 					int[] x = {Math.abs(i-S/2), Math.abs(j-S/2), Math.abs(k-S/2)};
 					int value = (int)Math.sqrt(x[0]*x[0]+x[1]*x[1]+x[2]*x[2]);
-					ball[i][j][k] = (byte)r.nextInt(48);
+//					ball[i][j][k] = (byte)r.nextInt(48);
+					ball[i][j][k] = (byte)50;
 					if(value < S/2)
 						ball[i][j][k] = (byte)0x20;
 					if( x[0]< S/5 && x[1] < S/5 && x[2] < S/5)
@@ -82,19 +84,27 @@ public class App implements KeyListener
 						ball[i][j][k] = (byte)0x40;
 				}
 		tex = new Texture3D( ball );
+//		try
+//		{
+//		tex.writeFile(
+//				new File("test.vol")
+//				);
+//		}
+//		catch( FileNotFoundException e )
+//		{
+//			e.printStackTrace();
+//		}
+		Texture3D tex2 = new Texture3D(256);
 		try
 		{
-		tex.writeFile(
-				new File("test.vol")
-				);
+			System.out.println("trying to read from file");
+			tex2 = tex2.fromFile(new File("mrbrain"), 256);
+			tex = tex2;
+			System.out.println("successfully read from file");
 		}
 		catch( FileNotFoundException e )
 		{
-			e.printStackTrace();
 		}
-		
-		byte[] volume = new byte[4096];
-		Texture3D tex2 = new Texture3D( volume, 256 );
 		
 		draw();
 		while(true);

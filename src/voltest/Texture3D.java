@@ -30,15 +30,15 @@ public class Texture3D
 	}
 	public Texture3D(byte[] in, int dim) {
 		
-		int len = (int)Math.sqrt(dim*dim*dim);
-		if(len < in.length)
-			throw new IllegalArgumentException("Not enough space for given data.");
+//		int len = (int)Math.sqrt(dim*dim*dim);
+//		if(len < in.length)
+//			throw new IllegalArgumentException("Not enough space for given data.");
 		
 		this.size = dim;
 		
 		this.data = new byte[ dim ][ dim ][ dim ]; 
 		int x = 0, y = 0, z = 0;
-		for(int i = 0; i < len; ++i)
+		for(int i = 0; i < in.length; ++i)
 		{
 			if(z>=dim)
 			{
@@ -70,6 +70,31 @@ public class Texture3D
 		}
 		
 		return new Texture3D(buffer,(int)Math.pow(size, 2.0/3.0) + 1);
+	}
+	public Texture3D fromFile(File file, int dim) throws FileNotFoundException
+	{
+		byte[] buffer = new byte[dim*dim*dim];
+		BufferedInputStream filein;
+		try
+		{
+			filein = new BufferedInputStream( new FileInputStream( file ));
+			int b1, b2, z = 0, len = (int)file.length();
+			for(int i = 0; i < len; ++i)
+			{
+				b1 = filein.read();
+				b2 = filein.read();
+				int result = (b1 << 8) | b2;
+				buffer[z++] = (byte)(((double)result)/Short.MAX_VALUE * 255 );
+				if(i%100000==0)
+					System.out.println("read " + (float)100*i/len  + " percent");
+			}
+		}
+		catch( IOException e )
+		{
+			e.printStackTrace();
+		}
+		
+		return new Texture3D(buffer, dim);
 	}
 	public void writeFile(File file) throws FileNotFoundException
 	{
