@@ -6,6 +6,7 @@ public class Camera {
 	private Matrix mvp;
 	private Rectangle view;
 	private Vector pos, up, right, forward, move;
+	private Double azimuth, inclination;
 	
 	public Camera()
 	{
@@ -57,6 +58,14 @@ public class Camera {
 		up = new Vector(0, 1, 0);
 		forward = new Vector(0, 0, -1);
 	}
+	public void translate(
+			Vector v)
+	{
+		pos = Vector.plus(pos, v);
+		mvp = mvp.multiply(
+				MathUtil.translationMatrix( 
+						Vector.minus(v)));
+	}
 	
 	public void translateX(
 			double amount)
@@ -78,42 +87,62 @@ public class Camera {
 		pos = Vector.plus(pos, tmp);
 		mvp = mvp.multiply(MathUtil.translationMatrix( Vector.minus(tmp) ));
 	}
-	
-	public void rotateX(
+	public void rotateAzimuthal(
 			double angle)
 	{
-		Matrix mat = MathUtil.rotationMatrix(
-				right,
-				-angle);
-		forward = mat.multiply( forward );
-		up = Vector.crossProduct(
-				forward,
-				right);
+		Matrix rot = MathUtil.rotationMatrix(
+				Vector.Y, 
+				angle);
+		pos = rot.multiply(pos);
+		forward = Vector.minus(
+				pos);
 		right = Vector.crossProduct(
-				up,
+				Vector.Y,
 				forward);
+		up = Vector.crossProduct(
+				forward, 
+				right);
 		forward.normalize();
 		right.normalize();
 		up.normalize();
-		mvp = mvp.multiply(mat);
+		mvp = mvp.multiply( rot );
+		System.out.println("position:" + "{"+pos.x+","+pos.y+","+pos.z+"}");
+		System.out.println("orientation:");
+		System.out.println(forward);
+		System.out.println(right);
+		System.out.println(up);
+		System.out.println( Vector.scalarProduct(forward, right));
+		System.out.println( Vector.scalarProduct(forward, up));
+		System.out.println( Vector.scalarProduct(right, up));
 	}
-	public void rotateY(
+	
+	public void rotateElevational(
 			double angle)
 	{
-		Matrix mat = MathUtil.rotationMatrix(
-				new Vector(0, 1, 0),
-				-angle);
-		forward = mat.multiply( forward );
+		Matrix rot = MathUtil.rotationMatrix(
+				right,
+				angle);
+		pos = rot.multiply(pos);
+		forward = Vector.minus(
+				pos);
 		right = Vector.crossProduct(
-				new Vector(0, 1, 0),
+				Vector.Y,
 				forward);
 		up = Vector.crossProduct(
-				forward,
+				forward, 
 				right);
 		forward.normalize();
 		right.normalize();
 		up.normalize();
-		mvp = mvp.multiply(mat);
+		mvp = mvp.multiply( rot );
+		System.out.println("position:" + "{"+pos.x+","+pos.y+","+pos.z+"}");
+		System.out.println("orientation:");
+		System.out.println(forward);
+		System.out.println(right);
+		System.out.println(up);
+		System.out.println( Vector.scalarProduct(forward, right));
+		System.out.println( Vector.scalarProduct(forward, up));
+		System.out.println( Vector.scalarProduct(right, up));
 	}
 	public Vector pos()
 	{
@@ -148,14 +177,5 @@ public class Camera {
 		System.out.println("up: " + up);
 		System.out.println("right: " + right);
 		System.out.println("forward: " + forward);
-	}
-	public void rotateYaround(Vector center, double angle)
-	{
-		mvp = mvp.multiply(MathUtil.translationMatrix(Vector.minus(center,this.pos)));
-		Matrix mat = MathUtil.rotationMatrix(
-				new Vector(0, 1, 0),
-				-angle);
-		mvp = mvp.multiply(mat);
-		mvp = mvp.multiply(MathUtil.translationMatrix(Vector.minus(this.pos,center)));
 	}
 }

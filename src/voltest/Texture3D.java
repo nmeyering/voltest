@@ -13,24 +13,18 @@ import java.util.Arrays;
 
 public class Texture3D
 {
-	private int[] data;
+	private byte[][][] data;
 	private int dim;
-	private static final int depth = 3;
 
 	public Texture3D( int dim ){
-		this.dim = dim * dim * dim * depth;
-		this.data = new int[ this.dim ];
+		this.dim = dim;
+		this.data = new byte[dim][dim][dim];
 	}
 	
-	public Texture3D( int[] in )
+	public Texture3D( byte[][][] in )
 	{
-		this.dim = (int)Math.pow( (in.length / depth + 1), 1.0/3 );
-		if( this.dim < 1 || this.dim > 512 )
-			throw new IllegalArgumentException( "texture too small or too big ("
-					+ dim
-					+ ")."
-					);
 		this.data = in;
+		this.dim = in.length;
 	}
 	
 	public Texture3D( Texture3D copy )
@@ -38,14 +32,13 @@ public class Texture3D
 		this( copy.data );
 	}
 	public Texture3D(byte[] in, int dim) {
+		if (in.length > dim * dim * dim)
+			throw new IllegalArgumentException(
+					"not enough space!");
 		
-//		int len = (int)Math.sqrt(dim*dim*dim);
-//		if(len < in.length)
-//			throw new IllegalArgumentException("Not enough space for given data.");
+		this.dim = dim;
 		
-		this.size = dim;
-		
-		this.data = new int[ dim * dim * dim * depth ];
+		this.data = new byte[dim][dim][dim];
 		int x = 0, y = 0, z = 0;
 		for(int i = 0; i < in.length; ++i)
 		{
@@ -62,23 +55,6 @@ public class Texture3D
 			this.data[x][y][z] = in[i];
 			z++;
 		}
-	}
-	public Texture3D fromFile(File file) throws FileNotFoundException
-	{
-		int size = (int)file.length();
-		int[] buffer = new int[size];
-		BufferedInputStream filein;
-		try
-		{
-			filein = new BufferedInputStream( new FileInputStream( file ));
-			filein.read(buffer);
-		}
-		catch( IOException e )
-		{
-			e.printStackTrace();
-		}
-		
-		return new Texture3D( buffer );
 	}
 	public Texture3D fromFile(File file, int dim) throws FileNotFoundException
 	{

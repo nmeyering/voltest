@@ -34,8 +34,8 @@ public class App implements KeyListener
 	public App()
 	{
 		size = new Dimension(
-				1200,
-				900
+				400,
+				300
 				);
 		JFrame frame = new JFrame();
 		panel = new ViewPanel(
@@ -44,9 +44,9 @@ public class App implements KeyListener
 		frame.addKeyListener(this);
 		box = new Box(
 			new Vector(
-					-5,
-					-5,
-					-25
+					0,
+					0,
+					0
 					),
 					10
 				);
@@ -58,6 +58,8 @@ public class App implements KeyListener
 				1,
 				100
 				);
+		cam.translate(
+				new Vector(0,0,-25));
 		
 		frame.add( panel );
 		frame.pack();
@@ -94,17 +96,17 @@ public class App implements KeyListener
 //		{
 //			e.printStackTrace();
 //		}
-		Texture3D tex2 = new Texture3D(256);
-		try
-		{
-			System.out.println("trying to read from file");
-			tex2 = tex2.fromFile(new File("mrbrain"), 256);
-			tex = tex2;
-			System.out.println("successfully read from file");
-		}
-		catch( FileNotFoundException e )
-		{
-		}
+//		Texture3D tex2 = new Texture3D(256);
+//		try
+//		{
+//			System.out.println("trying to read from file");
+//			tex2 = tex2.fromFile(new File("mrbrain"), 256);
+//			tex = tex2;
+//			System.out.println("successfully read from file");
+//		}
+//		catch( FileNotFoundException e )
+//		{
+//		}
 		
 		draw();
 		while(true);
@@ -173,16 +175,16 @@ public class App implements KeyListener
 		switch( code )
 		{
 			case KeyEvent.VK_RIGHT:
-				cam.rotateYaround(box.center(), Math.toRadians(-5));
+				cam.rotateAzimuthal(Math.toRadians(-15));
 				break;
 			case KeyEvent.VK_LEFT: 
-				cam.rotateYaround(box.center(), Math.toRadians(5));
+				cam.rotateAzimuthal(Math.toRadians(15));
 				break;
 			case KeyEvent.VK_UP: 
-				cam.rotateX(Math.toRadians(5));
+				cam.rotateElevational(Math.toRadians(-15));
 				break;
 			case KeyEvent.VK_DOWN: 
-				cam.rotateX(Math.toRadians(-5));
+				cam.rotateElevational(Math.toRadians(15));
 				break;
 			case KeyEvent.VK_W: 
 				cam.translateZ(-1);

@@ -4,6 +4,9 @@ public class Vector
 {
 
 	public final static double EPSILON = 0.0000000001;
+	public final static Vector X = new Vector(1,0,0);
+	public final static Vector Y = new Vector(0,1,0);
+	public final static Vector Z = new Vector(0,0,1);
 
 	public final static Vector[] versor = {
 		new Vector(1,0,0),
@@ -96,6 +99,12 @@ public class Vector
 		this.w = 1;
 
 	}
+	
+	public static Vector normalize( Vector v )
+	{
+		v.normalize();
+		return v;
+	}
 
 	public void normalize()
 	{
@@ -150,12 +159,12 @@ public class Vector
 
 	public String toString()
 	{
-		return "(" + x + "," + y + "," + z + "," + w + ")";
+		return "{" + x + "," + y + "," + z + "," + w + "}";
 	}
 
 	public void printFormatted()
 	{
-		System.out.printf("(%2.4f, %2.4f, %2.4f, %2.4f)", x, y, z, w);
+		System.out.printf("{%2.4f, %2.4f, %2.4f, %2.4f}", x, y, z, w);
 	}
 	
 	public boolean isVersor()
