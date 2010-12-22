@@ -2,6 +2,7 @@ package voltest;
 
 import javax.swing.JPanel;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
@@ -52,6 +53,8 @@ public class ViewPanel extends JPanel
 				0,
 				0,
 				this);
+		g.setColor( Color.BLUE );
+		g.drawString( "voltest", 5, 20 );
 	}
 	
 	public void setPixel( int x, int y, int value )

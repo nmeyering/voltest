@@ -9,6 +9,7 @@ public class Ray
 	public Vector origin, direction, inv_direction;
 	public int[] sign;
 	public static final int MAX = 128;
+	public static final double FACTOR = 0.05;
 	
 	public Ray(
 			Vector org,
@@ -48,7 +49,7 @@ public class Ray
 			Vector sample = Vector.plus(
 					start,
 					Vector.multiply(
-							(double)i/MAX,
+							(double)i/samples,
 							dir
 							)
 					);
@@ -59,7 +60,7 @@ public class Ray
 						);
 			ret += b;
 		}
-		b = (byte)(Math.max(Math.min(ret * 0.15, 255), 0));
+		b = (byte)(Math.max(Math.min(ret * FACTOR, 255), 0));
 		return b;
 	}
 	public static List<Vector> intersections(

@@ -5,7 +5,7 @@ import java.awt.Rectangle;
 public class Camera {
 	private Matrix mvp, perspective;
 	private Rectangle view;
-	private Vector pos, up, right, forward, move;
+	private Vector pos, up, right, forward;
 	
 	public Camera()
 	{
@@ -18,6 +18,19 @@ public class Camera {
 			100
 			);
 	}
+
+	private void
+	regenerateMVP()
+	{
+		mvp = 
+			perspective.multiply(
+				MathUtil.toTransformMatrix(
+					forward, 
+					right, 
+					up, 
+					pos));
+	}
+
 	public Camera(
 			int width,
 			int height
@@ -41,60 +54,57 @@ public class Camera {
 			int zFar
 			)
 	{
-		mvp = MathUtil.perspectiveMatrix(
+		perspective = 
+			MathUtil.perspectiveMatrix(
 				fovy,
 				aspect,
 				zNear,
 				zFar);
-		perspective = new Matrix(mvp);
 		view = new Rectangle(
 				0,
 				0,
 				width,
 				height);
-		move = new Vector(0, 0, 0);
 		pos = new Vector(0, 0, 0);
 		right = new Vector(1, 0, 0);
 		up = new Vector(0, 1, 0);
 		forward = new Vector(0, 0, -1);
+		regenerateMVP();
 	}
+
 	public void translate(
 			Vector v)
 	{
 		pos = Vector.plus(pos, v);
-		mvp = mvp.multiply(
-				MathUtil.translationMatrix( 
-						Vector.minus(v)));
+		regenerateMVP();
 	}
 	
 	public void translateX(
 			double amount)
 	{
-		Vector tmp = Vector.multiply(
-						amount,
-						right
-						);
-		pos = Vector.plus(pos, tmp);
-		mvp = mvp.multiply(MathUtil.translationMatrix( Vector.minus(tmp) ));
+		translate(
+			Vector.multiply(
+				amount,
+				right));
 	}
+
 	public void translateZ(
 			double amount)
 	{
-		Vector tmp = Vector.multiply(
-						amount,
-						forward
-						);
-		pos = Vector.plus(pos, tmp);
-		mvp = mvp.multiply(MathUtil.translationMatrix( Vector.minus(tmp) ));
+		translate(
+			Vector.multiply(
+				amount,
+				forward));
 	}
+
 	public void rotateAzimuthal(
 			double angle)
 	{
 		Vector oldpos = new Vector( pos );
-		Matrix rot = MathUtil.rotationMatrix(
+		pos = 
+			MathUtil.rotationMatrix(
 				Vector.Y, 
-				angle);
-		pos = rot.multiply(pos);
+				angle).multiply(pos);
 		forward = Vector.minus(
 				pos);
 		right = Vector.crossProduct(
@@ -106,17 +116,7 @@ public class Camera {
 		forward.normalize();
 		right.normalize();
 		up.normalize();
-		mvp = perspective.multiply(
-				MathUtil.toTransformMatrix(
-						forward, right, up, pos));
-//		mvp = mvp.multiply( rot ).multiply(MathUtil.translationMatrix( Vector.minus(pos, oldpos) ));
-		
-		System.out.println( mvp );
-		System.out.println("position:" + "{"+pos.x+","+pos.y+","+pos.z+"}");
-		System.out.println("orientation:");
-		System.out.println(forward);
-		System.out.println(right);
-		System.out.println(up);
+		regenerateMVP();
 	}
 	
 	public void rotateElevational(
@@ -137,15 +137,7 @@ public class Camera {
 		forward.normalize();
 		right.normalize();
 		up.normalize();
-		mvp = mvp.multiply( rot );
-		System.out.println("position:" + "{"+pos.x+","+pos.y+","+pos.z+"}");
-		System.out.println("orientation:");
-		System.out.println(forward);
-		System.out.println(right);
-		System.out.println(up);
-		System.out.println( Vector.scalarProduct(forward, right));
-		System.out.println( Vector.scalarProduct(forward, up));
-		System.out.println( Vector.scalarProduct(right, up));
+		regenerateMVP();
 	}
 	public Vector pos()
 	{

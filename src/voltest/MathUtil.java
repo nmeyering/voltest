@@ -77,10 +77,14 @@ public class MathUtil
 			Vector up, Vector pos) {
 		double[][] elements =
 			new double[][]{
-			{forward.x,	forward.y,	forward.z,	pos.x},
-			{right.x,	right.y,	right.z,	pos.y},
-			{up.x,		up.y,		up.z,		pos.z},
-			{0,			0,			0,			1}};
-		return new Matrix( elements );
+			{right.x,right.y,right.z,0},
+			{up.x,up.y,up.z,0},
+			{forward.x,forward.y,forward.z,0},
+			{0,0,0,1}};
+		return 
+			new Matrix( elements ).multiply(
+				translationMatrix(
+					Vector.minus(
+						pos)));
 	}
 }
