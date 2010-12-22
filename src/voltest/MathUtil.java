@@ -1,6 +1,7 @@
 package voltest;
 
 import java.awt.Rectangle;
+import java.util.Arrays;
 
 public class MathUtil
 {
@@ -42,7 +43,6 @@ public class MathUtil
 			double angle
 			)
 	{
-		System.out.printf("trying to rotate %f about (%f,%f,%f)\n", angle, a.x, a.y, a.z);
 	    double sinx = Math.sin(angle),
 	    cosx = Math.cos(angle),
 	    cosxc = 1 - cosx,
@@ -71,5 +71,16 @@ public class MathUtil
 		ret.setValue(2, 3, a.z);
 		
 		return ret;
+	}
+
+	public static Matrix toTransformMatrix(Vector forward, Vector right,
+			Vector up, Vector pos) {
+		double[][] elements =
+			new double[][]{
+			{forward.x,	forward.y,	forward.z,	pos.x},
+			{right.x,	right.y,	right.z,	pos.y},
+			{up.x,		up.y,		up.z,		pos.z},
+			{0,			0,			0,			1}};
+		return new Matrix( elements );
 	}
 }

@@ -1,4 +1,7 @@
 package voltest;
+
+import java.util.Arrays;
+
 /**
  * Repräsentiert eine nxm-Matrix
  *
@@ -21,6 +24,13 @@ public class Matrix {
 		this.elements = elements;
 	}
 
+	public Matrix( Matrix m )
+	{
+		this.elements = new double[4][4];
+		for( int i = 0; i < 4; ++i)
+			this.elements[i] = Arrays.copyOf( m.elements[i], 4 );
+	}
+	
 	/**
 	 * Erzeugt eine Einheitsmatrix mit rows Zeilen und Spalten
 	 * 

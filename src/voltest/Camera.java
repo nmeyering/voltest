@@ -3,10 +3,9 @@ package voltest;
 import java.awt.Rectangle;
 
 public class Camera {
-	private Matrix mvp;
+	private Matrix mvp, perspective;
 	private Rectangle view;
 	private Vector pos, up, right, forward, move;
-	private Double azimuth, inclination;
 	
 	public Camera()
 	{
@@ -47,6 +46,7 @@ public class Camera {
 				aspect,
 				zNear,
 				zFar);
+		perspective = new Matrix(mvp);
 		view = new Rectangle(
 				0,
 				0,
@@ -90,6 +90,7 @@ public class Camera {
 	public void rotateAzimuthal(
 			double angle)
 	{
+		Vector oldpos = new Vector( pos );
 		Matrix rot = MathUtil.rotationMatrix(
 				Vector.Y, 
 				angle);
@@ -105,15 +106,17 @@ public class Camera {
 		forward.normalize();
 		right.normalize();
 		up.normalize();
-		mvp = mvp.multiply( rot );
+		mvp = perspective.multiply(
+				MathUtil.toTransformMatrix(
+						forward, right, up, pos));
+//		mvp = mvp.multiply( rot ).multiply(MathUtil.translationMatrix( Vector.minus(pos, oldpos) ));
+		
+		System.out.println( mvp );
 		System.out.println("position:" + "{"+pos.x+","+pos.y+","+pos.z+"}");
 		System.out.println("orientation:");
 		System.out.println(forward);
 		System.out.println(right);
 		System.out.println(up);
-		System.out.println( Vector.scalarProduct(forward, right));
-		System.out.println( Vector.scalarProduct(forward, up));
-		System.out.println( Vector.scalarProduct(right, up));
 	}
 	
 	public void rotateElevational(
@@ -171,11 +174,5 @@ public class Camera {
 	public Rectangle view()
 	{
 		return view;
-	}
-	public void printGizmo()
-	{
-		System.out.println("up: " + up);
-		System.out.println("right: " + right);
-		System.out.println("forward: " + forward);
 	}
 }

@@ -44,9 +44,9 @@ public class App implements KeyListener
 		frame.addKeyListener(this);
 		box = new Box(
 			new Vector(
-					0,
-					0,
-					0
+					-5,
+					-5,
+					-5
 					),
 					10
 				);
